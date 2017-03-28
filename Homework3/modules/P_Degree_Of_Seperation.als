@@ -35,9 +35,11 @@ fact irreflexive {
 
 // Here, instead of stating that any two people are in the transitive closure
 // we say that they must be connected within '6 degrees' by "dotting" all of the friendships with itself 6 times.
-pred degreeOfSeperation[a: Person, b: Person] {
+fact degreeOfSeparation {
 	all a, b : Person | {a->b} in (SocialNetwork.friendship).(SocialNetwork.friendship).(SocialNetwork.friendship).(SocialNetwork.friendship).(SocialNetwork.friendship).(SocialNetwork.friendship).(SocialNetwork.friendship)
 }
 
+pred show[] {}
+
 // And finally, we run our model for degreeOfSeperation
-run degreeOfSeperation
+run show
