@@ -1,22 +1,38 @@
 module Degree_Of_Seperation
 
-
-// Models the super set of all persons
 abstract sig Person{}
 
-// Models the super set of all social networks
-abstract sig SocialNetwork{
-	// Models the friendship relation between two friends
-	// for all of the social networks
-	friendship: Person -> Person	
+abstract sig SocialNetwork {
+	friendship: Person -> set Person	
 }
 
-// Here is how you can model individual persons. Note that the set 
-// Person = {Shawn, Cary, Chandan, Buffalo} with this declaration.
-// TODO: Model other CSSE faculty and staffs as well based on the question.
-one sig Shawn, Cary, Chandan, Buffalo extends Person{}
- 
-// Let's model all of the social networks
+one sig Shawn, Cary, Chandan, Buffalo, Sriram, Micah, Steve, Claude, Amanda, Lynn, Matt, Michael, Darryl, Delvin, David, JP extends Person{}
+
 one sig Facebook, Twitter, GooglePlus extends SocialNetwork {}
 
-// TODO: Complete the partial model
+fact allFriendships {
+	{Shawn->{Cary + Chandan + Buffalo} + Chandan->{Sriram + Micah + Steve}} in Facebook.friendship
+	~{Shawn->{Cary + Chandan + Buffalo} + Chandan->{Sriram + Micah + Steve}} in Facebook.friendship
+
+	{Sriram->{Claude + Amanda + Lynn} + Amanda->{Matt + Michael + Shawn}} in Twitter.friendship
+	~{Sriram->{Claude + Amanda + Lynn} + Amanda->{Matt + Michael + Shawn}} in Twitter.friendship
+	
+	{Cary->{Michael + Darryl + Buffalo} + Darryl->{Delvin + David + JP}} in GooglePlus.friendship
+	~{Cary->{Michael + Darryl + Buffalo} + Darryl->{Delvin + David + JP}} in GooglePlus.friendship
+}
+
+fact irreflexive {
+	no p : Person | {p->p} in SocialNetwork.friendship
+}
+
+pred transitive[a: Person, b: Person] {
+	all a: Person, b: Person | {a->b} in ^(SocialNetwork.friendship)
+}
+
+/*pred degreeOfSeperation[friend: Friend] {
+	all f: Friend | f in friend.^friendsWith
+}*/
+
+pred show[] {}
+
+run transitive for exactly 6 Person
