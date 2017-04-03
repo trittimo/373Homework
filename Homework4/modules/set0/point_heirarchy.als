@@ -12,7 +12,7 @@ fact NullnessReference {
 }
 
 fact ReferenceEquality {
-	all x, y : Object | x.ref = y.ref <=> x = y
+	all a, b : Object | a.ref = b.ref <=> a = b
 }
 
 sig Point extends Object {
@@ -31,29 +31,23 @@ pred Object.equalsObject[o: Object] {
 }
 
 pred Point.equalsPoint[o: Object] {
-	o = Null or (
-		o != Null and
-		o in Point and// - SubTypeOfPoint
-		this.x = o.x and this.y = o.y
-	) => this = o
-//	o = Null => this = o
-//	this.x = o.x and this.y = o.y => this = o
+	o = Null or (o in Point and this.x = o.x and this.y = o.y)
 }
 
 assert Reflexivity {
-	all x : Object - Null | x.equals[x]
+	all a : (Object - Null) | a.equals[a]
 }
 
 assert Symmetry {
-	all x, y : Object - Null | x.equals[y] <=> y.equals[x]
+	all a, b : (Object - Null) | a.equals[b] <=> b.equals[a]
 }
 
 assert Transitivity {
-	all x, y, z : Object - Null | x.equals[y] and y.equals[z] => x.equals[z]
+	all a, b, c : (Object - Null) | a.equals[b] and b.equals[c] => a.equals[c]
 }
 
 assert Nullity {
-	no x : Object - Null | x.equals[Null]
+	no a : (Object - Null) | a.equals[Null]
 }
 
 check Reflexivity for 2
