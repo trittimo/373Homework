@@ -6,7 +6,7 @@ public class ErrorReproducer {
 		Member b = new Member("Str$3", -4, 6);
 		Member c = new Member("Str$3", -4, 7);
 		
-		System.out.println("Transitivty error: a = b, b = c, a != c");
+		System.out.println("Transitivity error: a = b, b = c, a != c");
 		
 		boolean c1 = a.equals(b);
 		boolean c2 = b.equals(c);
