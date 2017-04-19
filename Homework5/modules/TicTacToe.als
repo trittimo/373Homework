@@ -25,7 +25,7 @@ sig GameState {
 
 // True if the given cells are occupied by the given type of Marker
 pred Board.IsMarker[cells : set Cell, t : Marker] {
-	all c : cells | c.(this.grid) = t
+	all c : cells | t in c.(this.grid)
 }
 
 // True if the board contains the given cell
@@ -51,14 +51,14 @@ pred GameState.Win[t : Marker] {
 		bd.IsMarker[C2 + C4 + C6, t]
 }
 
-// Specifies the board is fully filled (i.e. the game is definitively over)
-pred GameState.End[] {
+// True if the board is filled (i.e. the game is definitively over)
+pred GameState.Filled[] {
 	all c : Cell | this.board.Contains[c]
 }
 
 // True if the board is fully filled and there is no winner
-pred GameState.Draw[t : Marker] {
-	this.End[]
+pred GameState.Draw[] {
+	this.Filled[]
 	no t : Marker | this.Win[t]
 }
 
@@ -76,19 +76,27 @@ pred GameState.Init[t : Marker] {
 }
 
 
-pred Progress[g, g' : Cell -> lone Marker] {
-	#(g' - g) = 1 and no (g - g')
+// True if s has one more piece than 'this'
+pred GameState.HasNewPiece[s : GameState] {
+	let g = this.board.grid, g' = s.board.grid |
+		#(g' - g) = 1 and no (g - g')
 }
 
+fun GameState.GetNewPiece[s : GameState] : Marker {
+	let g = this.board.grid, g' = s.board.grid |
+		Cell.(g' - g)
+}
 
 // Specifies what a transition from one state to another looks like
 // The only difference should be a single additional piece in g'
 // The type of the new piece should correspond to the turn
 pred Transition[s, s' : GameState] {
 	s'.turn = s.NextTurn[]
-	let g = s.board.grid, g' = s'.board.grid |
-		(Progress[g, g'] and Cell.(g' - g) = s'.turn) or
-		s.End[]
+	// If the game is over, there should be no progression
+	s.Win[Cross] or s.Win[Nought] or s.Draw[] => s' = s
+	
+	// Otherwise, the board should progress
+	else s.HasNewPiece[s'] and s.GetNewPiece[s'] in s'.turn
 }
 
 
@@ -99,7 +107,7 @@ pred Trace[] {
 			Transition[s, s']
 }
 
-run Trace for exactly 9 GameState, exactly 9 Board
+run Trace for exactly 10 GameState, exactly 10 Board
 
 run Win for exactly 1 GameState, 1 Board
 run Draw for exactly 1 GameState, 1 Board
