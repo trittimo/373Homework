@@ -89,7 +89,7 @@ fun GameState.GetNewPiece[s : GameState] : Marker {
 
 // Specifies what a transition from one state to another looks like
 // The only difference should be a single additional piece in g'
-// The type of the new piece should correspond to the turn
+// The type of the new piece should correspond to the turn of s'.turn
 pred Transition[s, s' : GameState] {
 	s'.turn = s.NextTurn[]
 	// If the game is over, there should be no progression
@@ -99,15 +99,37 @@ pred Transition[s, s' : GameState] {
 	else s.HasNewPiece[s'] and s.GetNewPiece[s'] in s'.turn
 }
 
-
-pred Trace[] {
-	first.Init[Cross]
+// Trace the execution
+pred Trace[t : Marker] {
+	first.Init[t]
 	all s : (GameState - last) |
 		let s' = s.next |
 			Transition[s, s']
 }
 
-run Trace for exactly 10 GameState, exactly 10 Board
+// Winning trace
+pred WinningTrace[] {
+	Trace[Cross]
+	last.Win[Cross] or last.Win[Nought]
+}
 
+pred DrawTransition[s, s' : GameState] {
+	s'.turn = s.NextTurn[]
+	s.Draw[] => s' = s
+	else s.HasNewPiece[s'] and s.GetNewPiece[s'] in s'.turn
+	not s.Win[Cross] and not s.Win[Nought]
+	not s'.Win[Cross] and not s'.Win[Nought]
+}
+
+pred DrawTrace[t : Marker] {
+	first.Init[t]
+	all s : (GameState - last) |
+		let s' = s.next |
+			DrawTransition[s, s']
+}
+
+run WinningTrace for 6 GameState, 6 Board
+run DrawTrace for 10 GameState, 10 Board
+run Trace for exactly 10 GameState, exactly 10 Board
 run Win for exactly 1 GameState, 1 Board
 run Draw for exactly 1 GameState, 1 Board
