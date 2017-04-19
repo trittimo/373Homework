@@ -58,8 +58,10 @@ pred progress[] {
 
 // Ensure that at least one of the processes is elected as the leader
 assert AtLeastOneElected {
-	progress[] => some elected.Time
+progress [] => some elected.Time
 }
+check AtLeastOneElected for 3 Process, 7 Time
+
 
 // Ensure that it is possible to get a path without a loop in it
 // (i.e. there are no two processes such that the toSend times are the same)
@@ -67,7 +69,11 @@ pred looplessPath[] {no disj t, t': Time | toSend.t = toSend.t'}
 run looplessPath for 13 Time, 3 Process
 
 
+pred show { some elected }
+run show for 3 Process, 4 Time
+
 assert AtLeastOneElectedWithAnIssue {
 	some t: Time | some elected.t
 }
+
 check AtLeastOneElectedWithAnIssue for 3 but 7 Time
