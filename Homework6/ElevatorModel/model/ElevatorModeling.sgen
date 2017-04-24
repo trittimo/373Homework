@@ -1,0 +1,15 @@
+GeneratorModel for yakindu::java {
+
+	statechart ElevatorModeling {
+
+		feature Outlet {
+			targetProject = "ElevatorModel"
+			targetFolder = "src-gen"
+			libraryTargetFolder = "src"
+		}
+		
+		feature GeneralFeatures {
+			TimerService = true
+		}
+	}
+}
