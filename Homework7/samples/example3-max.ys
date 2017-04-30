@@ -1,0 +1,24 @@
+;; Variable Declarations
+(define a		:: int)  
+(define b		:: int)  
+(define max 	:: int)  
+(define rv		:: int)  
+
+;; Translation of commands to predicate logic
+(assert (=> (> a b) (= rv a)))
+(assert (=> (<= a b) (= rv b)))
+
+;; Post-condition 
+;; Note: We assert negation of post-condition to force counterexample
+(assert
+	(not
+		(and 
+			(>= rv a)
+			(>= rv b)
+		)
+	)
+)
+
+;; Check the model and show counterexample
+(check)
+(show-model)

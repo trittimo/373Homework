@@ -1,0 +1,39 @@
+;; Variable Declarations
+(define a    :: int)
+(define b    :: int)
+(define c    :: int)
+(define rv    :: int)
+(define isc    :: bool)
+
+(assert (= isc true))
+
+;; Translation of commands to predicate logic
+(assert (=> 
+          (and
+            (< a b)
+            (< b c)
+          )
+          (and (= rv a) (= isc false))))
+(assert (=>
+          (and
+            (< b a)
+            (< a c)
+          )
+          (and (= rv b) (= isc false))))
+(assert (=> isc (= rv c)))
+
+;; Post-condition 
+;; Note: We assert negation of post-condition to force counterexample
+(assert
+  (not
+    (and 
+      (<= rv a)
+      (<= rv b)
+      (<= rv c)
+    )
+  )
+)
+
+;; Check the model and show counterexample
+(check)
+(show-model)
