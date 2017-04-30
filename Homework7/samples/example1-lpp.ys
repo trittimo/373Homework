@@ -1,0 +1,23 @@
+;; ------------------------------------------------------------
+;; Verification of Example 1: Linear Programming Problem
+;; Run this model by typing "yices example1-lpp.ys" in the command prompt
+;; ------------------------------------------------------------
+
+(define y :: real)  
+(define x1 :: real)  
+(define x2 :: real)
+(define x3 :: real)
+
+(assert (= y (+ (* 20 x1) (* 10 x2) (* 15 x3))))
+(assert (<= (+ (* 3 x1) (* 2 x2) (* 5 x3)) 55))
+(assert (<= (+ (* 2 x1) x2 x3) 26))
+(assert (<= (+ x1 x2 (* 3 x3)) 30))
+(assert (<= (+ (* 5 x1) (* 2 x2) (* 4 x3)) 57))
+(assert (>= x1 0))
+(assert (>= x2 0))
+(assert (>= x3 0))
+
+;; CEGAR
+
+(check)
+(show-model)

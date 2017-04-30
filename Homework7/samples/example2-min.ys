@@ -1,0 +1,50 @@
+;; ------------------------------------------------------------
+;; Verification of Example2.min(int, int)
+;; Run this model by typing "yices example2-min.ys" in the command prompt
+;; ------------------------------------------------------------
+
+;; Variable Declarations
+(define a		:: int)  
+(define b		:: int)  
+(define min		:: int)  
+(define rv		:: int)  
+
+;; Intermediate Variables
+(define min1	:: int)
+(define c		:: bool)
+
+;; Pre-condition
+;; a and b are integers, which is already specified
+
+;; ------------------------------------------------------------
+;; Java Program
+;; ------------------------------------------------------------
+;;	public static int min(int a, int b) {
+;;		int min = a;
+;;		if(min < b)
+;;			min = b;
+;;		return min;
+;;	}
+;; ------------------------------------------------------------
+
+;; Translation of commands to predicate logic
+(assert (= min a))
+(assert (= c (< min b)))
+(assert (=> c (= min1 b)))
+(assert (=> c (= rv min1)))
+(assert (=> (not c) (= rv min)))
+ 
+;; Post-condition 
+;; Note: We assert negation of post-condition to force counterexample
+(assert
+	(not
+		(and 
+			(<= rv a)
+			(<= rv b)
+		)
+	)
+)
+
+;; Check the model and show counterexample
+(check)
+(show-model)
