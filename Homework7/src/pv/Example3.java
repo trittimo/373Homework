@@ -10,8 +10,8 @@ public class Example3 {
 	// modules/Example3-Max.ys and checking the code using Yices.
 
 	// You need to supply pre-condition and post-condition here
-	// Pre-Condition: TODO
-	// Post-Condition: TODO
+	// Pre-Condition: a and b are integers
+	// Post-Condition: rv >= a and rv >= b
 	public static int max(int a, int b) {
 		if(a > b)
 			return a;
